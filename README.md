@@ -5,8 +5,8 @@ persistent meta-progression.
 
 ## Play the Game
 
-- **Production**: [Play Swipe & Sorcery](https://yourusername.github.io/swipe-and-sorcery/)
-- **PR Previews**: Each pull request automatically gets its own preview URL
+- **Production**: [Play Swipe & Sorcery](https://swipe-and-sorcery.vercel.app/)
+- **PR Previews**: Each pull request automatically gets its own preview URL via Vercel
 
 ## Features
 
@@ -32,22 +32,20 @@ persistent meta-progression.
 - Node.js (v14 or higher)
 - npm
 
-### Deployment Options
+### Deployment
 
-The game can be deployed in multiple ways:
+The game is configured for **Vercel** deployment:
 
-1. **GitHub Pages** (Main branch)
-   - Automatically deploys to `https://yourusername.github.io/swipe-and-sorcery/`
-   - Configure in repo settings: Settings → Pages → Source: GitHub Actions
+1. **Connect to Vercel**:
+   - Go to [vercel.com](https://vercel.com)
+   - Sign up with GitHub
+   - Import this repository
+   - Click "Deploy"
 
-2. **Netlify** (Recommended for PR previews)
-   - Connect your GitHub repo at netlify.com
+2. **Automatic Features**:
+   - Production deployment from main branch
    - Automatic PR preview URLs
-   - No additional configuration needed
-
-3. **Surge.sh** (Alternative PR previews)
-   - Set up `SURGE_LOGIN` and `SURGE_TOKEN` secrets in GitHub
-   - PR previews at `https://swipe-sorcery-pr-{number}.surge.sh`
+   - Optimized build configuration via `vercel.json`
 
 ### Setup
 
