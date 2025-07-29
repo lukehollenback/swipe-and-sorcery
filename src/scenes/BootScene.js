@@ -133,6 +133,7 @@ export default class BootScene extends Phaser.Scene {
 
   create() {
     // Initialize game systems
+    console.log('BootScene complete - available textures:', Object.keys(this.textures.list));
     this.scene.start('MainMenuScene');
   }
 }

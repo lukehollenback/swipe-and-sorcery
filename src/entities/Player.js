@@ -25,17 +25,27 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   createParticleTrail() {
-    const particles = this.scene.add.particles(0, 0, 'particle', {
-      speed: { min: 50, max: 150 },
-      scale: { start: 0.5, end: 0 },
-      blendMode: 'ADD',
-      lifespan: 300,
-      frequency: 50
-    });
-    
-    particles.startFollow(this);
-    this.particleEmitter = particles;
-    this.particleEmitter.stop();
+    try {
+      const particles = this.scene.add.particles(0, 0, 'particle', {
+        speed: { min: 50, max: 150 },
+        scale: { start: 0.5, end: 0 },
+        blendMode: 'ADD',
+        lifespan: 300,
+        frequency: 50
+      });
+      
+      particles.startFollow(this);
+      this.particleEmitter = particles;
+      this.particleEmitter.stop();
+    } catch (error) {
+      console.warn('Failed to create particle trail:', error);
+      // Create a dummy emitter to prevent crashes
+      this.particleEmitter = {
+        start: () => {},
+        stop: () => {},
+        destroy: () => {}
+      };
+    }
   }
 
   moveInDirection(direction) {

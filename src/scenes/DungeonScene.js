@@ -10,37 +10,43 @@ export default class DungeonScene extends Phaser.Scene {
   }
 
   create() {
-    // Generate dungeon
-    const generator = new DungeonGenerator(20, 30);
-    this.dungeonData = generator.generate();
-    
-    // Create tilemap
-    this.createDungeon();
-    
-    // Create player
-    this.player = new Player(this, this.dungeonData.spawnPoint.x, this.dungeonData.spawnPoint.y);
-    
-    // Create exit portal
-    this.createExitPortal();
-    
-    // Initialize swipe controls
-    this.swipeController = new SwipeController(this);
-    this.swipeController.onSwipe((direction) => {
-      this.handleSwipe(direction);
-    });
-    
-    // Set up camera
-    this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
-    this.cameras.main.setZoom(1.2);
-    
-    // Set up collisions
-    this.setupCollisions();
-    
-    // Create UI overlay
-    this.scene.launch('GameUIScene', { player: this.player });
-    
-    // Keyboard controls for testing
-    this.cursors = this.input.keyboard.createCursorKeys();
+    try {
+      // Generate dungeon
+      const generator = new DungeonGenerator(20, 30);
+      this.dungeonData = generator.generate();
+      
+      // Create tilemap
+      this.createDungeon();
+      
+      // Create player
+      this.player = new Player(this, this.dungeonData.spawnPoint.x, this.dungeonData.spawnPoint.y);
+      
+      // Create exit portal
+      this.createExitPortal();
+      
+      // Initialize swipe controls
+      this.swipeController = new SwipeController(this);
+      this.swipeController.onSwipe((direction) => {
+        this.handleSwipe(direction);
+      });
+      
+      // Set up camera
+      this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
+      this.cameras.main.setZoom(1.2);
+      
+      // Set up collisions
+      this.setupCollisions();
+      
+      // Create UI overlay
+      this.scene.launch('GameUIScene', { player: this.player });
+      
+      // Keyboard controls for testing
+      this.cursors = this.input.keyboard.createCursorKeys();
+    } catch (error) {
+      console.error('Failed to create dungeon scene:', error);
+      // Fallback - return to main menu
+      this.scene.start('MainMenuScene');
+    }
   }
 
   createDungeon() {
@@ -57,44 +63,55 @@ export default class DungeonScene extends Phaser.Scene {
         const worldX = x * tileSize;
         const worldY = y * tileSize;
         
-        switch (tileType) {
-          case 'wall':
-            const wall = this.walls.create(worldX, worldY, 'wall');
-            wall.setOrigin(0, 0);
-            break;
-            
-          case 'floor':
-            const floor = this.add.image(worldX, worldY, 'floor');
-            floor.setOrigin(0, 0);
-            this.floors.add(floor);
-            break;
-            
-          case 'coin':
-            const floorUnderCoin = this.add.image(worldX, worldY, 'floor');
-            floorUnderCoin.setOrigin(0, 0);
-            this.floors.add(floorUnderCoin);
-            
-            const coin = this.coins.create(worldX + tileSize/2, worldY + tileSize/2, 'coin');
-            this.createCoinAnimation(coin);
-            break;
-            
-          case 'enemy':
-            const floorUnderEnemy = this.add.image(worldX, worldY, 'floor');
-            floorUnderEnemy.setOrigin(0, 0);
-            this.floors.add(floorUnderEnemy);
-            
-            const enemy = this.enemies.create(worldX + tileSize/2, worldY + tileSize/2, 'enemy');
-            this.createEnemyBehavior(enemy);
-            break;
-            
-          case 'chest':
-            const floorUnderChest = this.add.image(worldX, worldY, 'floor');
-            floorUnderChest.setOrigin(0, 0);
-            this.floors.add(floorUnderChest);
-            
-            const chest = this.chests.create(worldX + tileSize/2, worldY + tileSize/2, 'chest');
-            chest.isOpened = false;
-            break;
+        try {
+          switch (tileType) {
+            case 'wall':
+              const wall = this.walls.create(worldX, worldY, 'wall');
+              wall.setOrigin(0, 0);
+              break;
+              
+            case 'floor':
+              const floor = this.add.image(worldX, worldY, 'floor');
+              floor.setOrigin(0, 0);
+              this.floors.add(floor);
+              break;
+              
+            case 'coin':
+              const floorUnderCoin = this.add.image(worldX, worldY, 'floor');
+              floorUnderCoin.setOrigin(0, 0);
+              this.floors.add(floorUnderCoin);
+              
+              const coin = this.coins.create(worldX + tileSize/2, worldY + tileSize/2, 'coin');
+              this.createCoinAnimation(coin);
+              break;
+              
+            case 'enemy':
+              const floorUnderEnemy = this.add.image(worldX, worldY, 'floor');
+              floorUnderEnemy.setOrigin(0, 0);
+              this.floors.add(floorUnderEnemy);
+              
+              const enemy = this.enemies.create(worldX + tileSize/2, worldY + tileSize/2, 'enemy');
+              this.createEnemyBehavior(enemy);
+              break;
+              
+            case 'chest':
+              const floorUnderChest = this.add.image(worldX, worldY, 'floor');
+              floorUnderChest.setOrigin(0, 0);
+              this.floors.add(floorUnderChest);
+              
+              const chest = this.chests.create(worldX + tileSize/2, worldY + tileSize/2, 'chest');
+              chest.isOpened = false;
+              break;
+          }
+        } catch (error) {
+          console.warn(`Failed to create tile at (${x}, ${y}):`, error);
+          // Create a basic floor tile as fallback
+          try {
+            const fallbackFloor = this.add.rectangle(worldX + tileSize/2, worldY + tileSize/2, tileSize, tileSize, 0x7f8c8d);
+            this.floors.add(fallbackFloor);
+          } catch (fallbackError) {
+            console.error('Even fallback tile creation failed:', fallbackError);  
+          }
         }
       }
     }
