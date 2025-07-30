@@ -1,6 +1,5 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: './src/index.js',
@@ -9,7 +8,6 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     clean: true
   },
-  mode: 'development',
   devServer: {
     static: './dist',
     hot: true,
@@ -19,11 +17,6 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './src/index.html',
       title: 'Swipe & Sorcery'
-    }),
-    new CopyWebpackPlugin({
-      patterns: [
-        { from: 'assets', to: 'assets' }
-      ]
     })
   ],
   module: {
